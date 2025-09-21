@@ -1,0 +1,67 @@
+{
+  "name": "taskflow-pro",
+  "version": "1.0.0",
+  "description": "A real-time task management and collaboration platform with advanced features",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js",
+    "docker": "nodemon --inspect=0.0.0.0:9229 --verbose app.js",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "worker": "node worker.js",
+    "migrate": "npx sequelize-cli db:migrate",
+    "seed": "npx sequelize-cli db:seed:all"
+  },
+  "keywords": [
+    "task-management",
+    "collaboration",
+    "real-time",
+    "nodejs",
+    "express",
+    "postgresql",
+    "redis",
+    "bull",
+    "socket.io",
+    "jwt",
+    "swagger"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "dependencies": {
+    "@bull-board/api": "^5.8.0",
+    "@bull-board/express": "^5.8.0",
+    "aws-sdk": "^2.1227.0",
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.20.2",
+    "bull": "^4.11.3",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.2",
+    "express": "^4.18.2",
+    "express-rate-limit": "^6.7.0",
+    "helmet": "^6.0.1",
+    "ioredis": "^5.3.2",
+    "joi": "^17.7.0",
+    "jsonwebtoken": "^9.0.0",
+    "multer": "^1.4.5-lts.1",
+    "multer-s3": "^3.0.1",
+    "nodemailer": "^6.9.1",
+    "pg": "^8.11.0",
+    "pg-hstore": "^2.3.4",
+    "sequelize": "^6.31.1",
+    "socket.io": "^4.7.1",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^4.6.3",
+    "winston": "^3.8.2",
+    "winston-daily-rotate-file": "^4.7.1"
+  },
+  "devDependencies": {
+    "jest": "^29.5.0",
+    "nodemon": "^2.0.22",
+    "sequelize-cli": "^6.6.0",
+    "supertest": "^6.3.3"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}
