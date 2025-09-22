@@ -350,6 +350,24 @@ class QueueManager {
     return stats;
   }
 
+  // Add job to appropriate queue
+  static async addJob(jobType, data, delay = 0) {
+    switch (jobType) {
+      case 'updateTaskStats':
+        return await analyticsQueue.add('updateTaskStats', data, { delay });
+      case 'updateProjectStats':
+        return await analyticsQueue.add('updateProjectStats', data, { delay });
+      case 'trackTaskView':
+        return await analyticsQueue.add('trackTaskView', data, { delay });
+      case 'sendTaskNotification':
+        return await notificationQueue.add('send-task-notification', data, { delay });
+      case 'cleanupTaskData':
+        return await cleanupQueue.add('cleanup-task-data', data, { delay });
+      default:
+        throw new Error(`Unknown job type: ${jobType}`);
+    }
+  }
+
   // Cleanup all queues
   static async cleanupAllQueues() {
     await Promise.all([

@@ -1,7 +1,7 @@
 const { Task, User, Project, Comment } = require('../models');
 const { Op } = require('sequelize');
 const logger = require('../utils/logger');
-const queueManager = require('../services/queueManager');
+const { QueueManager } = require('../services/queueManager');
 
 /**
  * @swagger
@@ -129,7 +129,7 @@ const getAllTasks = async (req, res) => {
     });
 
     // Add background job to update task statistics
-    await queueManager.addJob('updateTaskStats', {
+    await QueueManager.addJob('updateTaskStats', {
       projectId: projectId || null,
       userId: req.user.id
     });
@@ -209,7 +209,7 @@ const getTaskById = async (req, res) => {
     }
 
     // Add background job to track task view
-    await queueManager.addJob('trackTaskView', {
+    await QueueManager.addJob('trackTaskView', {
       taskId: id,
       userId: req.user.id
     });
@@ -264,14 +264,14 @@ const createTask = async (req, res) => {
     });
 
     // Add background jobs
-    await queueManager.addJob('sendTaskNotification', {
+    await QueueManager.addJob('sendTaskNotification', {
       taskId: task.id,
       type: 'task_created',
       assignedTo: task.assignedTo,
       createdBy: req.user.id
     });
 
-    await queueManager.addJob('updateProjectStats', {
+    await QueueManager.addJob('updateProjectStats', {
       projectId: task.projectId
     });
 
@@ -333,7 +333,7 @@ const updateTask = async (req, res) => {
     });
 
     // Add background job for notifications
-    await queueManager.addJob('sendTaskNotification', {
+    await QueueManager.addJob('sendTaskNotification', {
       taskId: id,
       type: 'task_updated',
       assignedTo: task.assignedTo,
@@ -411,7 +411,7 @@ const partialUpdateTask = async (req, res) => {
     });
 
     // Add background job for notifications
-    await queueManager.addJob('sendTaskNotification', {
+    await QueueManager.addJob('sendTaskNotification', {
       taskId: id,
       type: 'task_updated',
       assignedTo: task.assignedTo,
@@ -454,7 +454,7 @@ const deleteTask = async (req, res) => {
     await task.destroy();
 
     // Add background job for cleanup
-    await queueManager.addJob('cleanupTaskData', {
+    await QueueManager.addJob('cleanupTaskData', {
       taskId: id,
       deletedBy: req.user.id
     });
@@ -516,7 +516,7 @@ const assignTask = async (req, res) => {
     });
 
     // Add background job for assignment notification
-    await queueManager.addJob('sendTaskNotification', {
+    await QueueManager.addJob('sendTaskNotification', {
       taskId: id,
       type: 'task_assigned',
       assignedTo: assignedTo,
@@ -593,7 +593,7 @@ const updateTaskStatus = async (req, res) => {
     });
 
     // Add background jobs
-    await queueManager.addJob('sendTaskNotification', {
+    await QueueManager.addJob('sendTaskNotification', {
       taskId: id,
       type: 'task_status_changed',
       assignedTo: task.assignedTo,
@@ -601,7 +601,7 @@ const updateTaskStatus = async (req, res) => {
       newStatus: status
     });
 
-    await queueManager.addJob('updateProjectStats', {
+    await QueueManager.addJob('updateProjectStats', {
       projectId: task.projectId
     });
 

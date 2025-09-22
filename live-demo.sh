@@ -46,6 +46,8 @@ LOGIN_RESPONSE=$(curl -s -X POST http://localhost:8080/api/v1/auth/login \
     \"password\": \"$DEMO_PASSWORD\"
   }")
 
+echo "Login response: $LOGIN_RESPONSE"
+
 JWT_TOKEN=$(echo "$LOGIN_RESPONSE" | grep -o '"accessToken":"[^"]*"' | cut -d'"' -f4)
 
 if [ -n "$JWT_TOKEN" ]; then
@@ -53,7 +55,15 @@ if [ -n "$JWT_TOKEN" ]; then
     echo "Token: ${JWT_TOKEN:0:20}..."
 else
     echo -e "${RED}❌ Failed to get JWT token${NC}"
-    exit 1
+    echo "Trying to get token from data field..."
+    JWT_TOKEN=$(echo "$LOGIN_RESPONSE" | grep -o '"token":"[^"]*"' | cut -d'"' -f4)
+    if [ -n "$JWT_TOKEN" ]; then
+        echo -e "${GREEN}✅ JWT token obtained from data field${NC}"
+        echo "Token: ${JWT_TOKEN:0:20}..."
+    else
+        echo -e "${RED}❌ Still failed to get JWT token${NC}"
+        exit 1
+    fi
 fi
 
 echo -e "\n${BLUE}2. CRUD Operations Demo${NC}"
